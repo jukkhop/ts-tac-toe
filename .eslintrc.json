@@ -20,12 +20,27 @@
   "rules": {
     "@typescript-eslint/explicit-member-accessibility": "off",
     "@typescript-eslint/indent": ["warn", 2],
+    "@typescript-eslint/no-use-before-define": [
+      "off",
+      {
+        "functions": false
+      }
+    ],
     "func-names": "off",
+    "import/prefer-default-export": "off",
     "indent": "off",
+    "lines-between-class-members": "off",
     "no-console": "error",
-    "no-unused-vars": "warn",
+    "no-restricted-syntax": "off",
+    "no-unused-vars": "off",
+    "no-use-before-define": ["off"],
     "object-shorthand": "off",
-    "prettier/prettier": "warn"
+    "prettier/prettier": [
+      "warn",
+      {
+        "trailingComma": "all"
+      }
+    ]
   },
   "settings": {
     "import/resolver": {

@@ -1,7 +1,7 @@
 {
   "author": "Jukka Hopeavuori <jukka.hopea@gmail.com>",
-  "description": "TypeScript version of Tac-toe experiment for comparison",
-  "license": "none",
+  "description": "Canvas experiment with TypeScript",
+  "license": "MIT",
   "name": "ts-tac-toe",
   "version": "1.0.0",
   "dependencies": {
@@ -23,7 +23,9 @@
     "typescript-bundle": "^1.0.16"
   },
   "scripts": {
-    "compile": "tsc",
-    "start": "tsc-bundle ./src/main.ts --outFile ./dist/main.js && PORT=8081 node ./dist/server.js"
+    "bundle-src": "tsc-bundle ./src/tsconfig.json",
+    "compile-src": "tsc --build ./src/tsconfig.json",
+    "compile": "tsc --build ./server/tsconfig.json",
+    "start": "tsc-bundle ./src/tsconfig.json && PORT=8081 node ./dist-server/server.js"
   }
 }
