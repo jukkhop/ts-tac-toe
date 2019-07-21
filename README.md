@@ -1,8 +1,9 @@
 # Canvas tac-toe experiment with TypeScript
 
-[Try online][compiled]
-<br>
-[Blog post][post]
+![alt text](https://github.com/jukkhop/ts-tac-toe/blob/master/screenshot.png "Screenshot")
+
+#### [Try the compiled version online][compiled]
+#### [Blog post][post]
 
 [compiled]: https://placeholder.com
 [post]: https://placeholder.com
