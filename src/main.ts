@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-console */
-
 import { Board, CellValue } from './board';
-import { scaleCanvas, setupCanvas } from './utils';
+import { FpsCounter } from './fps';
+import { scaleCanvas } from './utils';
 
-const BOARD_AMOUNT = 3.0;
+const BOARD_AMOUNT = 25;
 const UPDATE_DELAY = 1000.0;
 const ANIM_DURATION = 900.0;
 
@@ -12,13 +10,12 @@ function main(): void {
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
   const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
-  // scaleCanvas(canvas, ctx);
-  setupCanvas(canvas);
+  scaleCanvas(canvas, ctx);
 
   const width = window.innerWidth;
   const height = window.innerHeight;
-  const boardSpacingX = (width / BOARD_AMOUNT) * 0.125;
-  const boardSpacingY = (height / BOARD_AMOUNT) * 0.125;
+  const boardSpacingX = ((width * 1.0) / BOARD_AMOUNT) * 0.125;
+  const boardSpacingY = ((height * 1.0) / BOARD_AMOUNT) * 0.125;
   const totalSpacingX = BOARD_AMOUNT * boardSpacingX + boardSpacingX;
   const totalSpacingY = BOARD_AMOUNT * boardSpacingY + boardSpacingY;
   const boardWidth = Math.floor((width - totalSpacingX) / BOARD_AMOUNT);
@@ -34,6 +31,7 @@ function main(): void {
 
   let lastUpdate = 0.0;
   let lastRender = 0.0;
+  const fpsCounter = new FpsCounter();
 
   for (const x of Array(BOARD_AMOUNT).keys()) {
     if (!boards[x]) {
@@ -75,6 +73,8 @@ function main(): void {
           if (!board.isFinished()) {
             board.play();
           }
+
+          lastUpdate = ts;
         }
 
         for (const cellX of [0, 1, 2]) {
@@ -99,13 +99,9 @@ function main(): void {
       }
     }
 
-    render(ctx, width, height, boardDimensions, boards);
+    const fps = fpsCounter.tick();
+    render(ctx, width, height, boardDimensions, boards, fps);
     lastRender = ts;
-
-    if (doUpdate) {
-      lastUpdate = ts;
-    }
-
     requestAnimationFrame(update);
   };
 
@@ -118,6 +114,7 @@ function render(
   height: number,
   boardDimensions: [number, number, number, number],
   boards: Board[][],
+  fps: number,
 ): void {
   ctx.font = '20px monospace';
   ctx.fillText('hello', 5, 20);
@@ -142,101 +139,88 @@ function render(
       const offsetY = y * (boardHeight + boardSpacingY) + boardSpacingY;
       const board = boards[x][y];
 
-      // Render lines
+      // Render the lines
       for (const i of [1, 2]) {
         const innerOffsetX = i * sqWidth;
         const innerOffsetY = i * sqHeight;
-
-        // Horizontal
         ctx.moveTo(offsetX, offsetY + innerOffsetY);
         ctx.lineTo(offsetX + boardWidth, offsetY + innerOffsetY);
-
-        // Vertical
         ctx.moveTo(offsetX + innerOffsetX, offsetY);
         ctx.lineTo(offsetX + innerOffsetX, offsetY + boardHeight);
       }
 
-      // // Render the noughts and the crosses
-      // for cell_x in 0..3 {
-      //   for cell_y in 0..3 {
-      //     let center_x = cell_x as f64 * sq_width + (sq_width / 2.0) + offset_x;
-      //     let center_y = cell_y as f64 * sq_height + (sq_height / 2.0) + offset_y;
-      //     let r = sq_height / 5.0;
-      //     let cell = board.cells[cell_x][cell_y];
-      //     let progress = board.cell_progress[cell_x][cell_y];
+      // Render the Os and the Xs
+      for (const cellX of [0, 1, 2]) {
+        for (const cellY of [0, 1, 2]) {
+          const centerX = cellX * sqWidth + sqWidth / 2.0 + offsetX;
+          const centerY = cellY * sqHeight + sqHeight / 2.0 + offsetY;
+          const r = sqHeight / 5.0;
+          const cell = board.cells[cellX][cellY];
+          const progress = board.progress[cellX][cellY];
 
-      //     match cell {
-      //       CellValue:: O => {
-      //         ctx.move_to(center_x + r, center_y);
-      //         ctx.arc(center_x, center_y, r, 0.0, f64:: consts:: PI * 2.0 * progress)
-      //           .unwrap();
-      //       }
-      //       CellValue:: X => {
-      //         let origin_x = center_x - r;
-      //         let origin_y = center_y - r;
-      //         let target_x = center_x + r;
-      //         let target_y = center_y + r;
-      //         let inner_progress = if progress < 0.5 { progress * 2.0 } else { 1.0 };
-      //         let delta_x = (target_x - origin_x) * inner_progress;
-      //         let delta_y = (target_y - origin_y) * inner_progress;
+          if (cell === CellValue.O) {
+            ctx.moveTo(centerX + r, centerY);
+            ctx.arc(centerX, centerY, r, 0.0, Math.PI * 2.0 * progress);
+          } else if (cell === CellValue.X) {
+            let originX = centerX - r;
+            let originY = centerY - r;
+            let targetX = centerX + r;
+            let targetY = centerY + r;
 
-      //         ctx.move_to(origin_x, origin_y);
-      //         ctx.line_to(origin_x + delta_x, origin_y + delta_y);
+            let innerProgress = progress < 0.5 ? progress * 2.0 : 1.0;
+            let deltaX = (targetX - originX) * innerProgress;
+            let deltaY = (targetY - originY) * innerProgress;
 
-      //         let origin_x = center_x - r;
-      //         let origin_y = center_y + r;
-      //         let target_x = center_x + r;
-      //         let target_y = center_y - r;
-      //         let inner_progress = if progress > 0.5 {
-      //           (progress - 0.5) * 2.0
-      //         } else {
-      //           0.0
-      //         };
-      //         let delta_x = (target_x - origin_x) * inner_progress;
-      //         let delta_y = (target_y - origin_y) * inner_progress;
+            ctx.moveTo(originX, originY);
+            ctx.lineTo(originX + deltaX, originY + deltaY);
 
-      //         ctx.move_to(origin_x, origin_y);
-      //         ctx.line_to(origin_x + delta_x, origin_y + delta_y);
-      //       }
-      //       CellValue:: Empty => { }
-      //     }
-      //   }
-      // }
+            originX = centerX - r;
+            originY = centerY + r;
+            targetX = centerX + r;
+            targetY = centerY - r;
+            innerProgress = progress > 0.5 ? (progress - 0.5) * 2.0 : 0.0;
+            deltaX = (targetX - originX) * innerProgress;
+            deltaY = (targetY - originY) * innerProgress;
 
-      // // Render the cross-overs / strikethroughs
-      // if board.is_crossed {
-      //   let offset_x = x as f64 * (board_width + board_spacing_x) + board_spacing_x;
-      //   let offset_y = y as f64 * (board_height + board_spacing_y) + board_spacing_y;
-      //   let result = board.get_win_coordinates();
-      //   let progress = board.cross_progress;
+            ctx.moveTo(originX, originY);
+            ctx.lineTo(originX + deltaX, originY + deltaY);
+          }
+        }
+      }
 
-      //   match result {
-      //     Some(coords) => {
-      //       let(x1, y1, x2, y2) = coords;
+      // Render the cross-overs / strikethroughs
+      if (board.isCrossed) {
+        const winRow = board.getWinRow();
+        const progress = board.crossProgress;
 
-      //       let origin_x = x1 as f64 * sq_width + (sq_width / 2.0) + offset_x;
-      //       let origin_y = y1 as f64 * sq_height + (sq_height / 2.0) + offset_y;
-      //       let target_x = x2 as f64 * sq_width + (sq_width / 2.0) + offset_x;
-      //       let target_y = y2 as f64 * sq_height + (sq_height / 2.0) + offset_y;
-      //       let delta_x = (target_x - origin_x) * progress;
-      //       let delta_y = (target_y - origin_y) * progress;
+        if (winRow) {
+          const [x1, y1, x2, y2] = winRow;
 
-      //       ctx.move_to(origin_x, origin_y);
-      //       ctx.line_to(origin_x + delta_x, origin_y + delta_y);
-      //     }
-      //     None => { }
-      //   }
-      // }
+          const originX = x1 * sqWidth + sqWidth / 2.0 + offsetX;
+          const originY = y1 * sqHeight + sqHeight / 2.0 + offsetY;
+          const targetX = x2 * sqWidth + sqWidth / 2.0 + offsetX;
+          const targetY = y2 * sqHeight + sqHeight / 2.0 + offsetY;
+          const deltaX = (targetX - originX) * progress;
+          const deltaY = (targetY - originY) * progress;
+
+          ctx.moveTo(originX, originY);
+          ctx.lineTo(originX + deltaX, originY + deltaY);
+        }
+      }
     }
   }
 
   ctx.strokeStyle = '#cccccc';
   ctx.stroke();
+
+  // Render the fps counter
+  ctx.font = '20px monospace';
+  ctx.fillText(`FPS ${Math.round(fps)}`, 5.0, 20.0);
 }
 
 try {
   main();
 } catch (err) {
-  // eslint-disable-next-line
+  // eslint-disable-next-line no-console
   console.error(err);
 }

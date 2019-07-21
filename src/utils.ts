@@ -21,4 +21,8 @@ function setupCanvas(canvas: HTMLCanvasElement): void {
   canvas.height = window.innerHeight;
 }
 
-export { scaleCanvas, setupCanvas };
+function timestamp(): number {
+  return window.performance.now();
+}
+
+export { scaleCanvas, setupCanvas, timestamp };
