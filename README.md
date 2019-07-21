@@ -1,4 +1,4 @@
-# Canvas experiment with TypeScript
+# Canvas tac-toe experiment with TypeScript
 
 [Try online][compiled]
 <br>
