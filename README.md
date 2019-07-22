@@ -6,7 +6,7 @@
 
 #### [Blog post][post]
 
-[compiled]: https://placeholder.com
+[compiled]: https://ts-tac-toe.netlify.com/
 [post]: https://placeholder.com
 
 <br>
