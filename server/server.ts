@@ -6,7 +6,6 @@ const ROOT_FOLDER = path.join(__dirname, '../');
 const PORT = process.env.PORT || '8080';
 
 async function runServer(): Promise<void> {
-  app.use(express.static(path.join(ROOT_FOLDER, '/dist')));
   app.use(express.static(path.join(ROOT_FOLDER, '/public')));
 
   app.get('/', (req: Request, res: Response): void => {

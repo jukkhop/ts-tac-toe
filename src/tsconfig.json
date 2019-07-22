@@ -4,7 +4,7 @@
     "downlevelIteration": true,
     "esModuleInterop": true,
     "module": "commonjs",
-    "outDir": "../dist",
+    "outDir": "../public",
     "rootDir": "./",
     "strict": true,
     "target": "ES2016"

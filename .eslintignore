@@ -1,2 +1,2 @@
-dist
-dist-server
+build-server
+public/bundle.js

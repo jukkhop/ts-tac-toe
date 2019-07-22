@@ -4,7 +4,7 @@
     "downlevelIteration": true,
     "esModuleInterop": true,
     "module": "commonjs",
-    "outDir": "../dist-server",
+    "outDir": "../build-server",
     "rootDir": "./",
     "strict": true,
     "target": "es5"

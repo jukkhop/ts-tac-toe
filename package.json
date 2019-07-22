@@ -26,6 +26,6 @@
     "bundle-src": "tsc-bundle ./src/tsconfig.json",
     "compile-src": "tsc --build ./src/tsconfig.json",
     "compile-server": "tsc --build ./server/tsconfig.json",
-    "start": "tsc --build ./server/tsconfig.json && tsc-bundle ./src/tsconfig.json && node ./dist-server/server.js"
+    "start": "tsc --build ./server/tsconfig.json && tsc-bundle ./src/tsconfig.json && node ./build-server/server.js"
   }
 }
