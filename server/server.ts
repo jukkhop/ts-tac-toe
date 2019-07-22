@@ -3,7 +3,7 @@ import path from 'path';
 
 const app = express();
 const ROOT_FOLDER = path.join(__dirname, '../');
-const PORT = process.env.PORT || '8081';
+const PORT = process.env.PORT || '8080';
 
 async function runServer(): Promise<void> {
   app.use(express.static(path.join(ROOT_FOLDER, '/dist')));

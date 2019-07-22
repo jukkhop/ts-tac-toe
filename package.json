@@ -1,6 +1,6 @@
 {
   "author": "Jukka Hopeavuori <jukka.hopea@gmail.com>",
-  "description": "Canvas experiment with TypeScript",
+  "description": "Canvas tac-toe experiment with TypeScript",
   "license": "MIT",
   "name": "ts-tac-toe",
   "version": "1.0.0",
@@ -26,6 +26,6 @@
     "bundle-src": "tsc-bundle ./src/tsconfig.json",
     "compile-src": "tsc --build ./src/tsconfig.json",
     "compile": "tsc --build ./server/tsconfig.json",
-    "start": "tsc-bundle ./src/tsconfig.json && PORT=8081 node ./dist-server/server.js"
+    "start": "tsc-bundle ./src/tsconfig.json && node ./dist-server/server.js"
   }
 }
