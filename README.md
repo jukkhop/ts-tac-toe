@@ -4,7 +4,7 @@
 
 #### [Try the compiled version online][compiled]
 
-#### [Blog post][post]
+#### [Read the blog post][post]
 
 [compiled]: https://ts-tac-toe.netlify.com/
 [post]: https://placeholder.com
