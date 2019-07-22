@@ -10,11 +10,6 @@ class FpsCounter implements FpsCounterStruct {
   frames = new Array<number>();
   lastFrameTimestamp = timestamp();
 
-  constructor() {
-    this.frames = new Array<number>();
-    this.lastFrameTimestamp = timestamp();
-  }
-
   tick(): number {
     const now = timestamp();
 
