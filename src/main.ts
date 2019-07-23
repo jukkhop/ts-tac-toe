@@ -1,12 +1,13 @@
 import { Board, CellValue } from './board';
 import { FpsCounter } from './fps';
+import { Profiler } from './profiler';
 import { scaleCanvas } from './utils';
 
 const BOARD_AMOUNT = 25;
 const UPDATE_DELAY = 1000.0;
 const ANIM_DURATION = 900.0;
 
-function main(): void {
+function run(): void {
   const canvas = document.getElementById('canvas') as HTMLCanvasElement;
   const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
@@ -32,6 +33,7 @@ function main(): void {
   let lastUpdate = 0.0;
   let lastRender = 0.0;
   const fpsCounter = new FpsCounter();
+  const profiler = new Profiler();
 
   for (const x of Array(BOARD_AMOUNT).keys()) {
     if (!boards[x]) {
@@ -48,6 +50,7 @@ function main(): void {
     const renderDelta = ts - lastRender;
     const doUpdate = updateDelta > UPDATE_DELAY;
     const progressIncr = renderDelta / ANIM_DURATION;
+    profiler.start();
 
     for (const x of Array(BOARD_AMOUNT).keys()) {
       for (const y of Array(BOARD_AMOUNT).keys()) {
@@ -99,8 +102,12 @@ function main(): void {
       }
     }
 
+    profiler.stop();
+
     const fps = fpsCounter.tick();
-    render(ctx, width, height, boardDimensions, boards, fps);
+    const updateMean = profiler.mean();
+
+    render(ctx, width, height, boardDimensions, boards, fps, updateMean);
     lastRender = ts;
     requestAnimationFrame(update);
   };
@@ -115,6 +122,7 @@ function render(
   boardDimensions: [number, number, number, number],
   boards: Board[][],
   fps: number,
+  updateMean: number,
 ): void {
   ctx.font = '20px monospace';
   ctx.fillText('hello', 5, 20);
@@ -213,13 +221,14 @@ function render(
   ctx.strokeStyle = '#cccccc';
   ctx.stroke();
 
-  // Render the fps counter
+  // Render metrics
   ctx.font = '20px monospace';
   ctx.fillText(`FPS ${Math.round(fps)}`, 5.0, 20.0);
+  ctx.fillText(`Update mean ${updateMean.toFixed(2)}`, 100.0, 20.0);
 }
 
 try {
-  main();
+  run();
 } catch (err) {
   // eslint-disable-next-line no-console
   console.error(err);

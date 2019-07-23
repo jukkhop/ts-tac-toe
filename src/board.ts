@@ -1,5 +1,3 @@
-// Implementation for a single board
-
 import { getRandomInt } from './math';
 
 enum CellValue {
