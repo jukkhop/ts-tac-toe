@@ -30,10 +30,11 @@ function run(): void {
     boardSpacingY,
   ];
 
-  let lastUpdate = 0.0;
-  let lastRender = 0.0;
   const fpsCounter = new FpsCounter();
   const profiler = new Profiler();
+
+  let lastUpdate = 0.0;
+  let lastRender = 0.0;
 
   for (const x of Array(BOARD_AMOUNT).keys()) {
     if (!boards[x]) {
@@ -103,7 +104,6 @@ function run(): void {
     }
 
     profiler.stop();
-
     const fps = fpsCounter.tick();
     const updateMean = profiler.mean();
 
@@ -124,9 +124,6 @@ function render(
   fps: number,
   updateMean: number,
 ): void {
-  ctx.font = '20px monospace';
-  ctx.fillText('hello', 5, 20);
-
   const [
     boardWidth,
     boardHeight,
@@ -174,7 +171,6 @@ function render(
             let originY = centerY - r;
             let targetX = centerX + r;
             let targetY = centerY + r;
-
             let innerProgress = progress < 0.5 ? progress * 2.0 : 1.0;
             let deltaX = (targetX - originX) * innerProgress;
             let deltaY = (targetY - originY) * innerProgress;
