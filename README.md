@@ -7,7 +7,7 @@
 #### [Read the blog post][post]
 
 [compiled]: https://ts-tac-toe.netlify.com/
-[post]: https://placeholder.com
+[post]: https://caffeinerush.dev/blog/experimenting-with-rust-and-webassembly
 
 <br>
 
