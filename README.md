@@ -1,4 +1,4 @@
-# Canvas tac-toe experiment with TypeScript
+# Canvas experiment with TypeScript
 
 ![alt text](https://github.com/jukkhop/ts-tac-toe/blob/master/screenshot.png 'Screenshot')
 
